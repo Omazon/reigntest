@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
 export interface News extends Document {
   created_at: Date;
-  title: string;
+  title?: string;
   url: null;
-  author: string;
+  author?: string;
   points: number;
   story_text: string;
   comment_text: null;
@@ -12,6 +12,6 @@ export interface News extends Document {
   story_title: null;
   story_url: null;
   parent_id: null;
-  _tags: string[];
+  _tags?: string[];
   objectID: string;
 }

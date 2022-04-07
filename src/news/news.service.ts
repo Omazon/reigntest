@@ -16,7 +16,6 @@ export class NewsService {
   ) {}
   @Cron(CronExpression.EVERY_HOUR)
   getNewsFromAPI(): Observable<AxiosResponse<any>> {
-    console.log('get cada 5');
     return this.httpService
       .get('https://hn.algolia.com/api/v1/search_by_date?query=nodejs')
       .pipe(map((response) => response.data));

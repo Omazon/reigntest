@@ -8,12 +8,19 @@ import {
   Res,
 } from '@nestjs/common';
 import { NewsService } from './news.service';
-import { NewsDto } from './dtos/news.dto';
+
+import { ApiResponse } from '@nestjs/swagger';
+import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 
 @Controller('news')
 export class NewsController {
   constructor(private newsServices: NewsService) {}
 
+  @ApiResponse({
+    status: 200,
+    description:
+      'Return message confirm, this endpoint read API News and save to own database, beside has cron for every hour',
+  })
   @Get('/get-product-from-api')
   getNewsFromApi(@Res() res) {
     this.newsServices.getNewsFromAPI().subscribe((value) => {
@@ -29,6 +36,16 @@ export class NewsController {
   }
 
   @Get('/')
+  @ApiImplicitQuery({ name: 'page', required: false })
+  @ApiImplicitQuery({ name: 'limit', required: false })
+  @ApiImplicitQuery({ name: 'author', required: false })
+  @ApiImplicitQuery({ name: 'title', required: false })
+  @ApiImplicitQuery({ name: 'tags', required: false })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Return news from Database, you can filter using the fields above',
+  })
   async getNews(
     @Res() res,
     @Query('page') page?: number,
@@ -50,6 +67,10 @@ export class NewsController {
   }
 
   @Delete('/delete')
+  @ApiResponse({
+    status: 200,
+    description: 'Change isActive flag to false, return confirm message',
+  })
   async deleteNews(@Res() res, @Query('productID') productID: number) {
     const news = await this.newsServices.deleteNews(productID);
     if (!news) throw new NotFoundException('News does not exist');
