@@ -1,18 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { map, Observable } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { News } from './interfaces/news.interface';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class NewsService {
+  private readonly logger = new Logger(NewsService.name);
   constructor(
     private httpService: HttpService,
     @InjectModel('News') private newsModel: Model<News>,
   ) {}
+  @Cron(CronExpression.EVERY_HOUR)
   getNewsFromAPI(): Observable<AxiosResponse<any>> {
+    console.log('get cada 5');
     return this.httpService
       .get('https://hn.algolia.com/api/v1/search_by_date?query=nodejs')
       .pipe(map((response) => response.data));
